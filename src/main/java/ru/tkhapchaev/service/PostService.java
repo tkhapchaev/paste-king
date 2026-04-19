@@ -45,6 +45,7 @@ public class PostService {
     public PostResponse updatePost(AppUser author, Long id, UpdatePostRequest request) {
         Post post = postRepository.findByIdAndAuthor(id, author)
                 .orElseThrow(() -> new NotFoundException("Post not found"));
+
         post.updateText(request.text());
 
         return PostResponse.from(post);

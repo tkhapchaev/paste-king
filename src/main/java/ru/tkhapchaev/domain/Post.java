@@ -32,6 +32,9 @@ public class Post {
     @Column(nullable = false, columnDefinition = "text")
     private String text;
 
+    @Column(name = "is_edited", nullable = false)
+    private boolean isEdited;
+
     @Column(name = "created_at", nullable = false, updatable = false)
     private Instant createdAt;
 
@@ -46,6 +49,7 @@ public class Post {
     @PrePersist
     void prePersist() {
         Instant now = Instant.now();
+
         createdAt = now;
         updatedAt = now;
     }
@@ -57,6 +61,10 @@ public class Post {
 
     public void updateText(String text) {
         this.text = text;
-        this.updatedAt = Instant.now();
+
+        updatedAt = Instant.now();
+
+        if (!isEdited)
+            isEdited = true;
     }
 }

@@ -105,7 +105,7 @@ function clearSession() {
   state.totalPages = 0;
   sessionStorage.removeItem(SESSION_KEY);
   renderSession();
-  renderEmptyPosts("Войдите, чтобы увидеть свои посты.");
+  renderEmptyPosts("Войдите, чтобы увидеть свои посты");
 }
 
 function renderSession() {
@@ -137,7 +137,7 @@ function renderPosts(pageData) {
   elements.nextPageButton.disabled = pageData.page >= pageData.totalPages - 1;
 
   if (pageData.content.length === 0) {
-    renderEmptyPosts("Пока нет постов. Создайте первый текст выше.");
+    renderEmptyPosts("Пока нет постов. Создайте первый текст выше");
     return;
   }
 
@@ -160,6 +160,10 @@ function renderPosts(pageData) {
       postText.classList.add("is-collapsed");
       expandButton.classList.remove("is-hidden");
       expandButton.addEventListener("click", () => togglePostExpansion(postText, expandButton));
+    }
+
+    if (post.isEdited) {
+      node.querySelector(".post-date").textContent += " (ред.)";
     }
 
     elements.postsList.appendChild(node);
@@ -214,8 +218,8 @@ function togglePostExpansion(postText, expandButton) {
 
 function formatDate(value) {
   return new Intl.DateTimeFormat("ru-RU", {
-    dateStyle: "medium",
-    timeStyle: "short",
+    dateStyle: "short",
+    timeStyle: "short"
   }).format(new Date(value));
 }
 
@@ -318,7 +322,7 @@ async function updatePost(event, id, textValue) {
 
 async function loadPosts() {
   if (!state.session) {
-    renderEmptyPosts("Войдите, чтобы увидеть свои посты.");
+    renderEmptyPosts("Войдите, чтобы увидеть свои посты");
     return;
   }
 
