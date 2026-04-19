@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="color-scheme" content="dark">
+    <title>Paste King</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/styles.css">
+  </head>
+  <body>
+    <div class="page-shell">
+      <header class="hero">
+        <div>
+          <p class="eyebrow">private text board</p>
+          <h1>Paste King</h1>
+          <p class="hero-copy">Самый минималистичный сервис для текстового постинга</p>
+        </div>
+        <div class="session-card" id="sessionCard">
+          <span class="status-dot" aria-hidden="true"></span>
+          <div>
+            <span class="muted">Сессия</span>
+            <strong id="sessionLabel">не активна</strong>
+          </div>
+        </div>
+      </header>
+
+      <main>
+        <section class="screen login-screen" id="loginScreen">
+          <section class="panel auth-panel" id="authPanel" aria-labelledby="authTitle">
+            <div class="panel-header">
+              <p class="eyebrow">access</p>
+              <h2 id="authTitle">Вход</h2>
+            </div>
+            <form id="loginForm" class="stack">
+              <label>
+                <span>Логин</span>
+                <input id="loginInput" name="login" type="text" autocomplete="username" required placeholder="username">
+              </label>
+              <label>
+                <span>Пароль</span>
+                <input id="passwordInput" name="password" type="password" autocomplete="current-password" required placeholder="password">
+              </label>
+              <button class="primary-button" type="submit">Авторизоваться</button>
+            </form>
+          </section>
+
+          <aside class="login-note">
+            <p class="eyebrow">locked mode</p>
+            <h2>README</h2>
+            <p>Paste King - это минималистичное пространство для личных текстовых заметок.
+              Авторизуйтесь, создавайте посты, быстро копируйте нужные фрагменты и возвращайтесь к своим записям.
+              Ваши посты надёжно защищены и доступны только после входа в аккаунт, интерфейс управления скрыт до успешной авторизации.</p>
+            <a href="https://github.com/tkhapchaev">Автор на GitHub</a>
+          </aside>
+        </section>
+
+        <section class="screen dashboard-screen is-hidden" id="dashboardScreen">
+          <section class="panel composer-panel" id="composerPanel" aria-labelledby="composerTitle">
+            <div class="panel-header horizontal">
+              <div>
+                <p class="eyebrow">compose</p>
+                <h2 id="composerTitle">Новый пост</h2>
+              </div>
+              <button class="ghost-button" id="logoutButton" type="button">Выйти</button>
+            </div>
+            <form id="postForm" class="stack">
+              <label>
+                <span>Текст</span>
+                <textarea id="postText" name="text" maxlength="65535" rows="9" required placeholder="Напишите заметку, идею или фрагмент текста..."></textarea>
+              </label>
+              <div class="form-footer">
+                <span class="counter" id="textCounter">0 / 65535</span>
+                <button class="primary-button" type="submit">Опубликовать</button>
+              </div>
+            </form>
+          </section>
+
+          <section class="panel posts-panel" id="postsPanel" aria-labelledby="postsTitle">
+            <div class="panel-header horizontal">
+              <div>
+                <p class="eyebrow">archive</p>
+                <h2 id="postsTitle">Мои посты</h2>
+              </div>
+              <button class="ghost-button" id="refreshButton" type="button">Обновить</button>
+            </div>
+
+            <div class="toolbar">
+              <label class="limit-control">
+                <span>Limit</span>
+                <select id="limitSelect">
+                  <option value="5">5</option>
+                  <option value="10" selected>10</option>
+                  <option value="20">20</option>
+                  <option value="50">50</option>
+                </select>
+              </label>
+              <div class="pager" aria-label="Пагинация постов">
+                <button class="ghost-button" id="prevPageButton" type="button">Назад</button>
+                <span id="pageLabel">0 / 0</span>
+                <button class="ghost-button" id="nextPageButton" type="button">Вперёд</button>
+              </div>
+            </div>
+
+            <div class="posts-list" id="postsList" aria-live="polite"></div>
+          </section>
+        </section>
+      </main>
+
+      <div class="toast" id="toast" role="status" aria-live="polite"></div>
+    </div>
+
+    <template id="postTemplate">
+      <article class="post-card">
+        <div class="post-meta">
+          <span class="post-date"></span>
+          <div class="post-actions">
+            <button class="copy-button" type="button">Копировать</button>
+            <button class="edit-button" type="button">Редактировать</button>
+            <button class="delete-button" type="button">Удалить</button>
+          </div>
+        </div>
+        <p class="post-text"></p>
+        <button class="expand-button is-hidden" type="button">Показать полностью</button>
+        <form class="edit-form is-hidden">
+          <label>
+            <span>Редактирование</span>
+            <textarea class="edit-textarea" maxlength="65535" rows="8" required></textarea>
+          </label>
+          <div class="edit-actions">
+            <button class="primary-button" type="submit">Сохранить</button>
+            <button class="ghost-button cancel-edit-button" type="button">Отмена</button>
+          </div>
+        </form>
+      </article>
+    </template>
+
+    <script src="/app.js" defer></script>
+  </body>
+</html>

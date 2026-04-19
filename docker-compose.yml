@@ -1,0 +1,61 @@
+services:
+  postgres:
+    image: ${POSTGRES_IMAGE}
+    container_name: ${POSTGRES_CONTAINER_NAME}
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: ${POSTGRES_HEALTHCHECK_INTERVAL}
+      timeout: ${POSTGRES_HEALTHCHECK_TIMEOUT}
+      retries: ${POSTGRES_HEALTHCHECK_RETRIES}
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+
+  app:
+    build:
+      context: .
+    image: ${APP_IMAGE}
+    container_name: ${APP_CONTAINER_NAME}
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      APP_NAME: ${APP_NAME}
+      SERVER_PORT: ${SERVER_PORT}
+      SPRING_DATASOURCE_URL: jdbc:postgresql://${POSTGRES_HOST}:${POSTGRES_INTERNAL_PORT}/${POSTGRES_DB}
+      SPRING_DATASOURCE_USERNAME: ${POSTGRES_USER}
+      SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD}
+      APP_INITIAL_LOGIN: ${APP_INITIAL_LOGIN}
+      APP_INITIAL_PASSWORD: ${APP_INITIAL_PASSWORD}
+      APP_JWT_SECRET: ${APP_JWT_SECRET}
+      APP_JWT_EXPIRATION: ${APP_JWT_EXPIRATION}
+      APP_SWAGGER_ENABLED: ${APP_SWAGGER_ENABLED}
+
+  nginx:
+    image: ${NGINX_IMAGE}
+    container_name: ${NGINX_CONTAINER_NAME}
+    restart: unless-stopped
+    depends_on:
+      - app
+    ports:
+      - "${NGINX_PORT}:${NGINX_INTERNAL_PORT}"
+    environment:
+      NGINX_INTERNAL_PORT: ${NGINX_INTERNAL_PORT}
+      SERVER_PORT: ${SERVER_PORT}
+      NGINX_API_RATE: ${NGINX_API_RATE}
+      NGINX_API_BURST: ${NGINX_API_BURST}
+      NGINX_AUTH_RATE: ${NGINX_AUTH_RATE}
+      NGINX_AUTH_BURST: ${NGINX_AUTH_BURST}
+      NGINX_CONNECTION_LIMIT: ${NGINX_CONNECTION_LIMIT}
+    volumes:
+      - ./frontend:/usr/share/nginx/html:ro
+      - ./nginx/default.conf.template:/etc/nginx/templates/default.conf.template:ro
+
+volumes:
+  postgres-data:
+    name: ${POSTGRES_VOLUME}
