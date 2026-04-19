@@ -137,7 +137,7 @@ function renderPosts(pageData) {
   elements.nextPageButton.disabled = pageData.page >= pageData.totalPages - 1;
 
   if (pageData.content.length === 0) {
-    renderEmptyPosts("Пока нет постов. Создайте первый текст выше");
+    renderEmptyPosts("Пока здесь пусто. Создайте свой первый пост!");
     return;
   }
 
